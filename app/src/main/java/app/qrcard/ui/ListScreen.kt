@@ -63,7 +63,7 @@ fun ListScreen(
     var pendingDelete by remember { mutableStateOf<CardEntry?>(null) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("My QR codes") }) },
+        topBar = { TopAppBar(colors = brandBarColors(), title = { Text("My QR codes") }) },
         bottomBar = bottomBar,
         floatingActionButton = {
             ExtendedFloatingActionButton(

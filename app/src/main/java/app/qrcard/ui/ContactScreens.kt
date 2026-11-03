@@ -89,7 +89,7 @@ fun ContactDetailScreen(
     var confirmDelete by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
-            TopAppBar(
+            TopAppBar(colors = brandBarColors(), 
                 title = { Text(contact.displayName) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
                 actions = {
@@ -210,7 +210,7 @@ fun ContactEditScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            TopAppBar(colors = brandBarColors(), 
                 title = { Text(if (isNew) "Check the details" else "Edit card") },
                 navigationIcon = { IconButton(onClick = onCancel) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Cancel") } },
                 actions = { IconButton(onClick = { onSave(draft) }) { Icon(Icons.Filled.Check, "Save") } },

@@ -97,7 +97,7 @@ fun EditScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            TopAppBar(colors = brandBarColors(), 
                 title = { Text(if (isNew) "New QR code" else "Edit QR code") },
                 navigationIcon = {
                     IconButton(onClick = onCancel) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Cancel") }

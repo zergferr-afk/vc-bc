@@ -64,7 +64,7 @@ fun ComposeScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            TopAppBar(colors = brandBarColors(), 
                 title = { Text(template.name) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
             )

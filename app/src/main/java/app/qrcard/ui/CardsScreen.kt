@@ -72,7 +72,7 @@ fun CardsScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Scanned cards") }) },
+        topBar = { TopAppBar(colors = brandBarColors(), title = { Text("Scanned cards") }) },
         bottomBar = bottomBar,
         floatingActionButton = {
             Box {

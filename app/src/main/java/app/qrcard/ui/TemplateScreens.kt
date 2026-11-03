@@ -54,7 +54,7 @@ fun TemplatesScreen(
     bottomBar: @Composable () -> Unit,
 ) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Email templates") }) },
+        topBar = { TopAppBar(colors = brandBarColors(), title = { Text("Email templates") }) },
         bottomBar = bottomBar,
         floatingActionButton = {
             ExtendedFloatingActionButton(onClick = onAdd, icon = { Icon(Icons.Filled.Add, null) }, text = { Text("New template") })
@@ -111,7 +111,7 @@ fun TemplateEditScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            TopAppBar(colors = brandBarColors(), 
                 title = { Text(if (isNew) "New template" else "Edit template") },
                 navigationIcon = { IconButton(onClick = onCancel) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Cancel") } },
                 actions = {

@@ -61,7 +61,7 @@ fun ShowScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            TopAppBar(colors = brandBarColors(), 
                 title = { },
                 navigationIcon = {
                     IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") }
