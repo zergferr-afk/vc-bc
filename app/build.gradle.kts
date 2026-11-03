@@ -16,13 +16,26 @@ android {
         versionName = "1.1"
     }
 
+    // A fixed release key keeps updates installable over the old version without losing data.
+    // CI provides it from the repository secrets SIGNING_KEYSTORE_B64 and SIGNING_PASSWORD.
+    val releaseKeystore = System.getenv("SIGNING_KEYSTORE")?.let { file(it) }?.takeIf { it.exists() }
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = releaseKeystore
+                storePassword = System.getenv("SIGNING_PASSWORD")
+                keyAlias = System.getenv("SIGNING_ALIAS") ?: "myqrcard"
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: System.getenv("SIGNING_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Signed with the debug key so the release APK installs straight away.
-            // Swap in your own keystore before publishing to Google Play.
-            signingConfig = signingConfigs.getByName("debug")
+            // Without the release key (local builds), fall back to the debug key.
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
     }
     compileOptions {
