@@ -14,6 +14,8 @@ import app.qrcard.data.ScannedContact
 import app.qrcard.data.Store
 import app.qrcard.data.defaultEntries
 import app.qrcard.data.defaultTemplates
+import app.qrcard.export.ContactExport
+import app.qrcard.export.ExportFormat
 import app.qrcard.scan.CardParser
 import app.qrcard.scan.CardScanner
 import app.qrcard.util.Files
@@ -138,6 +140,15 @@ class AppViewModel(private val app: Application) : AndroidViewModel(app) {
         contacts.removeAll { it.id == id }
         saveContacts()
     }
+
+    /** Writes all scanned cards to a spreadsheet file that can be attached to an email. */
+    fun exportContacts(format: ExportFormat): File? = runCatching {
+        val stamp = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
+        val file = File(app.cacheDir, "shared/scanned-cards-$stamp.${format.extension}")
+        file.parentFile?.mkdirs()
+        file.outputStream().use { ContactExport.write(format, contacts.toList(), it) }
+        file
+    }.getOrNull()
 
     fun markEmailed(contactId: String, templateName: String) {
         val c = findContact(contactId) ?: return

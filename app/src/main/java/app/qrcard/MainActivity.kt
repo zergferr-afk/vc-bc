@@ -47,6 +47,13 @@ import app.qrcard.ui.TemplateEditScreen
 import app.qrcard.ui.TemplatePickerDialog
 import app.qrcard.ui.TemplatesScreen
 import app.qrcard.util.Files
+import app.qrcard.email.EmailLauncher
+import app.qrcard.export.ExportFormat
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
+import java.text.DateFormat
+import java.util.Date
 import java.io.File
 import java.util.UUID
 
@@ -199,6 +206,7 @@ private fun App(vm: AppViewModel = viewModel()) {
                 pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             },
             onAddManually = { route = "newContact:" + UUID.randomUUID() },
+            onExport = { format, byEmail -> exportCards(context, vm, format, byEmail) },
             bottomBar = bottomBar,
         )
         "templates" -> TemplatesScreen(
@@ -227,4 +235,34 @@ private fun App(vm: AppViewModel = viewModel()) {
         )
     }
     if (vm.scanState == ScanState.Reading) ReadingCardDialog()
+}
+
+/** Exports every scanned card, then opens it in Outlook (or another app) as an attachment. */
+private fun exportCards(context: Context, vm: AppViewModel, format: ExportFormat, byEmail: Boolean) {
+    val file = vm.exportContacts(format)
+    if (file == null) {
+        Toast.makeText(context, "Couldn't create the export file", Toast.LENGTH_SHORT).show()
+        return
+    }
+    val count = vm.contacts.size
+    val cards = if (count == 1) "1 card" else "$count cards"
+    if (byEmail) {
+        EmailLauncher.open(
+            context,
+            to = "",
+            subject = "Scanned business cards (${DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date())})",
+            body = "Attached are $cards exported from My QR Card as a ${format.label} file.",
+            attachment = file,
+            attachmentMime = format.mime,
+        )
+    } else {
+        val uri = Files.shareUri(context, file)
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = format.mime
+            putExtra(Intent.EXTRA_STREAM, uri)
+            putExtra(Intent.EXTRA_SUBJECT, file.name)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(Intent.createChooser(intent, "Save or share $cards"))
+    }
 }

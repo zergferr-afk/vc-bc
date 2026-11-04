@@ -20,6 +20,8 @@ to edit, reorder or delete. Everything starts with placeholder details for you t
 the name, job title, company, email, phone and website. Check the fields, fix anything it
 misread, and save. From a saved card you can send an intro email or save the person to your
 phone's contacts.
+The share button at the top exports all scanned cards as an Excel (.xlsx) or CSV file and
+opens it in Outlook as an attachment, or saves it wherever you choose.
 
 **Templates.** One intro email per product or service. It starts with Consulting, Trainings
 and Pumpsim / Ventsim / CONTROL. Replace the [bracketed] text with your own wording.

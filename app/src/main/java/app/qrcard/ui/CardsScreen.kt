@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -51,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.qrcard.data.EmailTemplate
 import app.qrcard.data.ScannedContact
+import app.qrcard.export.ExportFormat
 import java.text.DateFormat
 import java.util.Date
 
@@ -63,8 +65,10 @@ fun CardsScreen(
     onTakePhoto: () -> Unit,
     onPickPhoto: () -> Unit,
     onAddManually: () -> Unit,
+    onExport: (ExportFormat, Boolean) -> Unit,
     bottomBar: @Composable () -> Unit,
 ) {
+    var exportMenu by remember { mutableStateOf(false) }
     var menu by remember { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf("") }
     val shown = if (query.isBlank()) contacts else contacts.filter {
@@ -72,7 +76,33 @@ fun CardsScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(colors = brandBarColors(), title = { Text("Scanned cards") }) },
+        topBar = {
+            TopAppBar(
+                colors = brandBarColors(),
+                title = { Text("Scanned cards") },
+                actions = {
+                    if (contacts.isNotEmpty()) {
+                        Box {
+                            IconButton(onClick = { exportMenu = true }) { Icon(Icons.Filled.Share, "Export cards") }
+                            DropdownMenu(expanded = exportMenu, onDismissRequest = { exportMenu = false }) {
+                                DropdownMenuItem(
+                                    text = { Text("Email as Excel file (.xlsx)") },
+                                    onClick = { exportMenu = false; onExport(ExportFormat.XLSX, true) },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Email as CSV file") },
+                                    onClick = { exportMenu = false; onExport(ExportFormat.CSV, true) },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Save or share Excel file") },
+                                    onClick = { exportMenu = false; onExport(ExportFormat.XLSX, false) },
+                                )
+                            }
+                        }
+                    }
+                },
+            )
+        },
         bottomBar = bottomBar,
         floatingActionButton = {
             Box {
